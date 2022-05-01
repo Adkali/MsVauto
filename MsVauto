@@ -141,7 +141,7 @@ elif [[ $Payload == "2" ]]; then
 sleep 1
  echo -e "${Light}Staged Payloads for Linux x64x86${EndC} >> $HOME/"
 sleep 1
- echo -e"${Y}[+]x86 PAYLOAD.....${EndC}"
+ echo -e "${Y}[+]x86 PAYLOAD.....${EndC}"
 sleep 1
  echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
 sleep 1
