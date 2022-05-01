@@ -11,7 +11,7 @@
 
 ![צילום מסך 2022-05-01 133501](https://user-images.githubusercontent.com/90532971/166142204-fc78f84e-3029-4816-bf7a-20206e2c5a28.png)
 
-This tool created for making auto paylods with msfvenom cy choosing from a list of payloads. use the correct syntax, and run the script. for help use the "-h" flag. tested on kali linux, but it sould have problems running it on other distribution.
+This tool created for making auto payloads with msfvenom by choosing from a list of payloads. use the correct syntax, and run the script. for help use the "-h" flag. tested on kali linux, but it sould not have problems running it on other distribution.
 
 # Examples
 ![ffff](https://user-images.githubusercontent.com/90532971/166142399-928d4533-20a2-4fdc-9812-4b8f237080f2.png)
